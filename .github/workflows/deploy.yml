@@ -16,6 +16,7 @@ jobs:
           node-version: 24
           cache: 'npm'
       - run: npm install
+      - run: echo "VITE_DEEPSEEK_API_KEY=${{ secrets.AI_KEY }}" > .env
       - run: CI=false npm run build
       
       - uses: easingthemes/ssh-deploy@main
