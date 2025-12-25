@@ -24,13 +24,13 @@ function App() {
           vertical
           className="lg:flex-row lg:min-h-[600px] lg:gap-6"
         >
-          <div className="flex-1 min-w-0">
+          <div className="flex-[3] min-w-0">
             <Chat
               onContentGenerated={setInfographicContent}
               onLoadingChange={setIsGenerating}
             />
           </div>
-          <div className="flex-1 min-w-0">
+          <div className="flex-[7] min-w-0">
             <Preview
               content={infographicContent}
               loading={isGenerating}

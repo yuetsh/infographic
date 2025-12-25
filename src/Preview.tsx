@@ -127,6 +127,81 @@ function Preview({ content, loading = false, onContentChange }: PreviewProps) {
     }
   }, [generateImageDataUrl])
 
+  const handleDownload = useCallback(async () => {
+    if (!infographicRef.current || !content) {
+      message.error("无法下载：内容为空")
+      return
+    }
+
+    try {
+      message.loading({ content: "正在生成高清图片...", key: "download" })
+      
+      // 使用 Infographic 的原生 toDataURL 方法
+      const originalDataUrl = await infographicRef.current.toDataURL()
+      if (!originalDataUrl) {
+        throw new Error("无法生成图片数据")
+      }
+
+      // 使用 Canvas 添加白色背景
+      const img = new Image()
+      img.crossOrigin = "anonymous"
+      
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => {
+          try {
+            // 创建 Canvas
+            const canvas = document.createElement("canvas")
+            canvas.width = img.width
+            canvas.height = img.height
+            const ctx = canvas.getContext("2d")
+            
+            if (!ctx) {
+              reject(new Error("无法获取 Canvas 上下文"))
+              return
+            }
+            
+            // 先填充白色背景
+            ctx.fillStyle = "#ffffff"
+            ctx.fillRect(0, 0, canvas.width, canvas.height)
+            
+            // 绘制原始图片
+            ctx.drawImage(img, 0, 0)
+            
+            // 导出为新的 dataUrl
+            const dataUrl = canvas.toDataURL("image/png")
+            
+            // 创建下载链接
+            const link = document.createElement("a")
+            link.download = `信息图表-${Date.now()}.png`
+            link.href = dataUrl
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+            
+            resolve()
+          } catch (error) {
+            reject(error)
+          }
+        }
+        
+        img.onerror = () => {
+          reject(new Error("图片加载失败"))
+        }
+        
+        img.src = originalDataUrl
+      })
+
+      message.destroy("download")
+      message.success("高清图片下载成功！")
+    } catch (error) {
+      console.error("下载失败:", error)
+      message.destroy("download")
+      message.error(
+        error instanceof Error ? error.message : "下载失败，请稍后重试",
+      )
+    }
+  }, [content])
+
   return (
     <Card
       className="h-full !rounded-2xl !shadow-lg !shadow-slate-200/50 !border-slate-100 !bg-white/80 backdrop-blur-sm"
@@ -165,12 +240,19 @@ function Preview({ content, loading = false, onContentChange }: PreviewProps) {
               查看大图
             </Button>
             <Button
-              type="primary"
               icon={<Icon icon="mingcute:copy-line" className="text-base" />}
               onClick={handleCopy}
               disabled={loading}
             >
               复制图片
+            </Button>
+            <Button
+              type="primary"
+              icon={<Icon icon="mingcute:download-line" className="text-base" />}
+              onClick={handleDownload}
+              disabled={loading}
+            >
+              下载图片
             </Button>
           </div>
         )}
