@@ -84,7 +84,6 @@ function Preview({ content, loading = false, onContentChange }: PreviewProps) {
 
   const handleFullscreen = useCallback(async () => {
     try {
-      message.loading("正在生成图片...", 0)
       const dataUrl = await generateImageDataUrl()
       setImageDataUrl(dataUrl)
       setIsImageModalOpen(true)
@@ -100,7 +99,6 @@ function Preview({ content, loading = false, onContentChange }: PreviewProps) {
 
   const handleCopy = useCallback(async () => {
     try {
-      message.loading("正在生成图片...", 0)
       const dataUrl = await generateImageDataUrl()
 
       const clipboard = navigator?.clipboard
