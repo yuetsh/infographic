@@ -33,13 +33,13 @@ function Chat({ onContentGenerated, onLoadingChange }: ChatProps) {
     onLoadingChange?.(true)
     try {
       const result = await generateContent({ prompt: value.trim() })
-      
+
       // 直接使用 AI 返回的原始内容
       onContentGenerated(result.content)
-      
+
       // 保存历史记录
       addHistory(value.trim(), result.content)
-      
+
       setValue("")
       message.success("生成成功！")
     } catch (error) {
@@ -47,7 +47,7 @@ function Chat({ onContentGenerated, onLoadingChange }: ChatProps) {
       message.error(
         error instanceof AIServiceError
           ? error.message
-          : "发送消息失败，请稍后重试"
+          : "发送消息失败，请稍后重试",
       )
     } finally {
       setLoading(false)
@@ -59,11 +59,19 @@ function Chat({ onContentGenerated, onLoadingChange }: ChatProps) {
     <Card
       className="h-full !rounded-2xl !shadow-lg !shadow-slate-200/50 !border-slate-100 !bg-white/80 backdrop-blur-sm"
       styles={{
-        body: { height: "100%", display: "flex", flexDirection: "column", padding: "20px" }
+        body: {
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          padding: "20px",
+        },
       }}
     >
       <div className="mb-4 sm:mb-6 flex items-center justify-between flex-wrap gap-2">
-        <Title level={4} className="mt-0 !mb-0 !text-slate-800 !text-lg sm:!text-xl">
+        <Title
+          level={4}
+          className="mt-0 !mb-0 !text-slate-800 !text-lg sm:!text-xl"
+        >
           对话区域
         </Title>
         {history.length > 0 && (
@@ -74,8 +82,6 @@ function Chat({ onContentGenerated, onLoadingChange }: ChatProps) {
             cancelText="取消"
           >
             <Button
-              type="text"
-              size="small"
               icon={<Icon icon="mingcute:delete-line" className="text-base" />}
             >
               清空历史
@@ -83,7 +89,7 @@ function Chat({ onContentGenerated, onLoadingChange }: ChatProps) {
           </Popconfirm>
         )}
       </div>
-      
+
       {/* 历史记录列表 */}
       <History
         history={history}
@@ -99,11 +105,11 @@ function Chat({ onContentGenerated, onLoadingChange }: ChatProps) {
           placeholder="请输入内容，支持多行输入...&#10;按 Enter 发送，Shift + Enter 换行"
           className="flex-1 !resize-none"
           styles={{
-            textarea: { 
+            textarea: {
               height: "100%",
               fontSize: "14px",
-              lineHeight: "1.6"
-            }
+              lineHeight: "1.6",
+            },
           }}
           onPressEnter={(e) => {
             if (e.shiftKey) {

@@ -51,7 +51,11 @@ function App() {
             />
           </div>
           <div className="flex-1 min-w-0">
-            <Preview content={infographicContent} loading={isGenerating} />
+            <Preview 
+              content={infographicContent} 
+              loading={isGenerating}
+              onContentChange={setInfographicContent}
+            />
           </div>
         </Flex>
       </div>

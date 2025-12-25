@@ -1,18 +1,22 @@
-import { Card, Typography, Spin, Button, message } from "antd"
+import { Card, Typography, Spin, Button, message, Modal, Input } from "antd"
 import { Infographic } from "@antv/infographic"
-import { useEffect, useRef, useCallback } from "react"
+import { useEffect, useRef, useCallback, useState } from "react"
 import { Icon } from "@iconify/react"
 
 const { Title } = Typography
+const { TextArea } = Input
 
 interface PreviewProps {
   content: string
   loading?: boolean
+  onContentChange?: (content: string) => void
 }
 
-function Preview({ content, loading = false }: PreviewProps) {
+function Preview({ content, loading = false, onContentChange }: PreviewProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const infographicRef = useRef<Infographic | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editedCode, setEditedCode] = useState("")
 
   useEffect(() => {
     if (!containerRef.current) {
@@ -44,6 +48,24 @@ function Preview({ content, loading = false }: PreviewProps) {
       }
     }
   }, [content])
+
+  const handleViewCode = useCallback(() => {
+    setEditedCode(content)
+    setIsModalOpen(true)
+  }, [content])
+
+  const handleSaveCode = useCallback(() => {
+    if (onContentChange) {
+      onContentChange(editedCode)
+      message.success("代码已更新！")
+    }
+    setIsModalOpen(false)
+  }, [editedCode, onContentChange])
+
+  const handleCancel = useCallback(() => {
+    setIsModalOpen(false)
+    setEditedCode("")
+  }, [])
 
   const handleCopy = useCallback(async () => {
     if (!infographicRef.current || !content) {
@@ -94,15 +116,23 @@ function Preview({ content, loading = false }: PreviewProps) {
           预览区域
         </Title>
         {content && (
-          <Button
-            type="primary"
-            icon={<Icon icon="mingcute:copy-line" className="text-base" />}
-            onClick={handleCopy}
-            disabled={loading}
-            size="large"
-          >
-            复制图片
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              icon={<Icon icon="mingcute:code-line" className="text-base" />}
+              onClick={handleViewCode}
+              disabled={loading}
+            >
+              编辑代码
+            </Button>
+            <Button
+              type="primary"
+              icon={<Icon icon="mingcute:copy-line" className="text-base" />}
+              onClick={handleCopy}
+              disabled={loading}
+            >
+              复制图片
+            </Button>
+          </div>
         )}
       </div>
       <div ref={containerRef} className="flex-1 min-h-0 relative rounded-lg overflow-hidden bg-slate-50/50 border border-slate-100">
@@ -121,6 +151,26 @@ function Preview({ content, loading = false }: PreviewProps) {
           </div>
         )}
       </div>
+      <Modal
+        title="编辑代码"
+        open={isModalOpen}
+        onOk={handleSaveCode}
+        onCancel={handleCancel}
+        width={900}
+        okText="保存"
+        cancelText="取消"
+        styles={{
+          body: { maxHeight: "70vh", overflow: "auto" }
+        }}
+      >
+        <TextArea
+          value={editedCode}
+          onChange={(e) => setEditedCode(e.target.value)}
+          rows={20}
+          className="font-mono text-sm"
+          placeholder="在此编辑代码..."
+        />
+      </Modal>
     </Card>
   )
 }
