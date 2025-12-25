@@ -72,7 +72,7 @@ function Chat({ onContentGenerated, onLoadingChange }: ChatProps) {
           level={4}
           className="mt-0 !mb-0 !text-slate-800 !text-lg sm:!text-xl"
         >
-          对话区域
+          对话
         </Title>
         {history.length > 0 && (
           <Popconfirm

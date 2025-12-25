@@ -219,7 +219,7 @@ function Preview({ content, loading = false, onContentChange }: PreviewProps) {
           level={4}
           className="mt-0 !mb-0 !text-slate-800 !text-lg sm:!text-xl"
         >
-          预览区域
+          预览
         </Title>
         {content && (
           <div className="flex items-center gap-2">
