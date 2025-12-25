@@ -31,11 +31,11 @@ function App() {
               level={1}
               className="mt-0 !mb-0 !text-3xl sm:!text-4xl lg:!text-5xl !font-bold bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 bg-clip-text !text-transparent"
             >
-              信息图表生成器（测试版）
+              徐越的信息图表生成器（测试版）
             </Title>
           </Space>
           <Text className="!text-base sm:!text-lg lg:!text-xl !text-slate-600 !leading-relaxed block max-w-3xl">
-            将你的内容粘贴到这里，AI 会理解你的内容并生成对应的信息图
+            将你的文字内容粘贴到这里，AI 会试图理解并生成对应的信息图表
           </Text>
         </Flex>
 
