@@ -188,7 +188,7 @@ function Preview({ content, loading = false, onContentChange }: PreviewProps) {
               className="w-16 h-16 sm:w-20 sm:h-20 mb-4 opacity-50"
             />
             <p className="text-sm sm:text-base text-center max-w-xs">
-              生成的信息图将在这里显示
+              生成的信息图表将在这里显示
             </p>
           </div>
         )}
@@ -196,7 +196,7 @@ function Preview({ content, loading = false, onContentChange }: PreviewProps) {
           <div className="absolute inset-0 bg-white/90 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
             <Spin size="large" />
             <p className="mt-4 text-slate-600 text-sm sm:text-base">
-              正在生成信息图...
+              正在生成信息图表...
             </p>
           </div>
         )}
