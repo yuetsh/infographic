@@ -3,7 +3,7 @@ import { Card, Typography, Input, Button, message, Popconfirm } from "antd"
 import { Icon } from "@iconify/react"
 import History, { type ChatHistory } from "./History"
 import { useHistory } from "./useHistory"
-import { generateContent, AIServiceError } from "./Service"
+import { streamGenerateContent, AIServiceError } from "./Service"
 
 const { Title } = Typography
 const { TextArea } = Input
@@ -29,26 +29,35 @@ function Chat({ onContentGenerated, onLoadingChange }: ChatProps) {
       return
     }
 
+    const prompt = value.trim()
     setLoading(true)
     onLoadingChange?.(true)
+    
+    let accumulatedContent = ""
+
     try {
-      const result = await generateContent({ prompt: value.trim() })
-
-      // 直接使用 AI 返回的原始内容
-      onContentGenerated(result.content)
-
-      // 保存历史记录
-      addHistory(value.trim(), result.content)
-
-      setValue("")
-      message.success("生成成功！")
-    } catch (error) {
-      console.error("发送消息失败:", error)
-      message.error(
-        error instanceof AIServiceError
-          ? error.message
-          : "发送消息失败，请稍后重试",
-      )
+      await streamGenerateContent({
+        prompt,
+        onChunk: (chunk) => {
+          // 逐步累积内容并更新预览
+          accumulatedContent += chunk
+          onContentGenerated(accumulatedContent)
+        },
+        onComplete: (fullContent) => {
+          // 流式生成完成，保存历史记录
+          addHistory(prompt, fullContent)
+          setValue("")
+          message.success("生成成功！")
+        },
+        onError: (error) => {
+          console.error("发送消息失败:", error)
+          message.error(
+            error instanceof AIServiceError
+              ? error.message
+              : "发送消息失败，请稍后重试",
+          )
+        },
+      })
     } finally {
       setLoading(false)
       onLoadingChange?.(false)
