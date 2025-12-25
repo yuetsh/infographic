@@ -1,7 +1,9 @@
 import { useState } from "react"
-import { Card, Typography, Input, Button, message } from "antd"
+import { Card, Typography, Input, Button, message, Popconfirm } from "antd"
 import { Icon } from "@iconify/react"
-import { SYSTEM_PROMPT } from "./Prompt"
+import History, { type ChatHistory } from "./History"
+import { useHistory } from "./useHistory"
+import { generateContent, AIServiceError } from "./Service"
 
 const { Title } = Typography
 const { TextArea } = Input
@@ -14,6 +16,13 @@ interface ChatProps {
 function Chat({ onContentGenerated, onLoadingChange }: ChatProps) {
   const [value, setValue] = useState("")
   const [loading, setLoading] = useState(false)
+  const { history, addHistory, deleteHistory, clearAllHistory } = useHistory()
+
+  // 点击历史记录项
+  const handleHistoryClick = (item: ChatHistory) => {
+    setValue(item.prompt)
+    onContentGenerated(item.content)
+  }
 
   const handleSend = async () => {
     if (!value.trim()) {
@@ -23,55 +32,23 @@ function Chat({ onContentGenerated, onLoadingChange }: ChatProps) {
     setLoading(true)
     onLoadingChange?.(true)
     try {
-      const apiKey = import.meta.env.VITE_DEEPSEEK_API_KEY
-      if (!apiKey) {
-        message.error("请配置 VITE_DEEPSEEK_API_KEY 环境变量")
-        setLoading(false)
-        return
-      }
-
-      const response = await fetch("https://api.deepseek.com/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model: "deepseek-chat",
-          messages: [
-            {
-              role: "system",
-              content: SYSTEM_PROMPT,
-            },
-            {
-              role: "user",
-              content: value,
-            },
-          ],
-          temperature: 0.7,
-          stream: false,
-        }),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.error?.message || `HTTP error! status: ${response.status}`)
-      }
-
-      const data = await response.json()
-      const content = data.choices?.[0]?.message?.content || ""
+      const result = await generateContent({ prompt: value.trim() })
       
-      if (!content) {
-        throw new Error("未收到有效响应")
-      }
-
       // 直接使用 AI 返回的原始内容
-      onContentGenerated(content)
+      onContentGenerated(result.content)
+      
+      // 保存历史记录
+      addHistory(value.trim(), result.content)
+      
       setValue("")
       message.success("生成成功！")
     } catch (error) {
       console.error("发送消息失败:", error)
-      message.error(error instanceof Error ? error.message : "发送消息失败，请稍后重试")
+      message.error(
+        error instanceof AIServiceError
+          ? error.message
+          : "发送消息失败，请稍后重试"
+      )
     } finally {
       setLoading(false)
       onLoadingChange?.(false)
@@ -85,11 +62,35 @@ function Chat({ onContentGenerated, onLoadingChange }: ChatProps) {
         body: { height: "100%", display: "flex", flexDirection: "column", padding: "20px" }
       }}
     >
-      <div className="mb-4 sm:mb-6">
+      <div className="mb-4 sm:mb-6 flex items-center justify-between flex-wrap gap-2">
         <Title level={4} className="mt-0 !mb-0 !text-slate-800 !text-lg sm:!text-xl">
           对话区域
         </Title>
+        {history.length > 0 && (
+          <Popconfirm
+            title="确定要清空所有历史记录吗？"
+            onConfirm={clearAllHistory}
+            okText="确定"
+            cancelText="取消"
+          >
+            <Button
+              type="text"
+              size="small"
+              icon={<Icon icon="mingcute:delete-line" className="text-base" />}
+            >
+              清空历史
+            </Button>
+          </Popconfirm>
+        )}
       </div>
+      
+      {/* 历史记录列表 */}
+      <History
+        history={history}
+        onHistoryClick={handleHistoryClick}
+        onDeleteHistory={deleteHistory}
+      />
+
       <div className="flex flex-col gap-3 sm:gap-4 flex-1 min-h-0">
         <TextArea
           value={value}
