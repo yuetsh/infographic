@@ -4,33 +4,30 @@ import UnoCSS from "unocss/vite"
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [
-    react(), 
-    UnoCSS(),
-  ],
+  plugins: [react(), UnoCSS()],
   build: {
     rollupOptions: {
       output: {
         manualChunks(id) {
           // 将 React 相关库单独打包
-          if (id.includes('react') || id.includes('react-dom')) {
-            return 'react-vendor'
+          if (id.includes("react") || id.includes("react-dom")) {
+            return "react-vendor"
           }
           // 将 Ant Design 单独打包
-          if (id.includes('antd')) {
-            return 'antd-vendor'
+          if (id.includes("antd")) {
+            return "antd-vendor"
           }
           // 将 AntV Infographic 单独打包
-          if (id.includes('@antv/infographic')) {
-            return 'antv-vendor'
+          if (id.includes("@antv/infographic")) {
+            return "antv-vendor"
           }
           // 将图标库单独打包
-          if (id.includes('@iconify')) {
-            return 'iconify-vendor'
+          if (id.includes("@iconify")) {
+            return "iconify-vendor"
           }
           // 将 node_modules 中的其他依赖打包到 vendor
-          if (id.includes('node_modules')) {
-            return 'vendor'
+          if (id.includes("node_modules")) {
+            return "vendor"
           }
         },
       },

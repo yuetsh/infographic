@@ -62,4 +62,3 @@ export function useHistory() {
     clearAllHistory,
   }
 }
-

@@ -29,7 +29,7 @@ export class AIServiceError extends Error {
  * @throws {AIServiceError} 当 API 调用失败时抛出
  */
 export async function generateContent(
-  options: GenerateContentOptions
+  options: GenerateContentOptions,
 ): Promise<GenerateContentResult> {
   const apiKey = import.meta.env.VITE_DEEPSEEK_API_KEY
   if (!apiKey) {
@@ -64,7 +64,7 @@ export async function generateContent(
       const errorData = await response.json().catch(() => ({}))
       throw new AIServiceError(
         errorData.error?.message || `HTTP error! status: ${response.status}`,
-        response.status
+        response.status,
       )
     }
 
@@ -81,8 +81,7 @@ export async function generateContent(
       throw error
     }
     throw new AIServiceError(
-      error instanceof Error ? error.message : "发送消息失败，请稍后重试"
+      error instanceof Error ? error.message : "发送消息失败，请稍后重试",
     )
   }
 }
-

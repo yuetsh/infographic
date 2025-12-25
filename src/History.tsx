@@ -1,4 +1,14 @@
-import { Card, Typography, Button, message, Popconfirm, Tooltip, Space, Flex, Divider } from "antd"
+import {
+  Card,
+  Typography,
+  Button,
+  message,
+  Popconfirm,
+  Tooltip,
+  Space,
+  Flex,
+  Divider,
+} from "antd"
 import { Icon } from "@iconify/react"
 
 const { Text } = Typography
@@ -47,7 +57,7 @@ function History({ history, onHistoryClick, onDeleteHistory }: HistoryProps) {
     <Card
       className="mb-4 !border-slate-200 !bg-slate-50/50"
       styles={{
-        body: { padding: 0, maxHeight: "192px", overflowY: "auto" }
+        body: { padding: 0, maxHeight: "192px", overflowY: "auto" },
       }}
     >
       <Space vertical size={0} className="w-full">
@@ -85,7 +95,9 @@ function History({ history, onHistoryClick, onDeleteHistory }: HistoryProps) {
                 <Button
                   type="text"
                   danger
-                  icon={<Icon icon="mingcute:delete-line" className="text-sm" />}
+                  icon={
+                    <Icon icon="mingcute:delete-line" className="text-sm" />
+                  }
                   onClick={(e: React.MouseEvent) => {
                     e.stopPropagation()
                   }}
