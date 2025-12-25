@@ -1,6 +1,12 @@
 import { Card, Typography, Spin, Button, message, Modal, Input } from "antd"
 import { Infographic } from "@antv/infographic"
-import { useEffect, useLayoutEffect, useRef, useCallback, useState } from "react"
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useCallback,
+  useState,
+} from "react"
 import { Icon } from "@iconify/react"
 
 const { Title } = Typography
@@ -29,7 +35,7 @@ function Preview({ content, loading = false, onContentChange }: PreviewProps) {
     if (!infographicContainerRef.current || !isMountedRef.current) {
       return false
     }
-    
+
     try {
       // 如果已存在实例，先销毁
       if (infographicRef.current) {
@@ -39,7 +45,7 @@ function Preview({ content, loading = false, onContentChange }: PreviewProps) {
           // 忽略销毁错误
         }
       }
-      
+
       infographicRef.current = new Infographic({
         container: infographicContainerRef.current,
         width: "100%",
@@ -53,72 +59,82 @@ function Preview({ content, loading = false, onContentChange }: PreviewProps) {
   }, [])
 
   // 使用回调 ref 确保容器准备好
-  const setInfographicContainer = useCallback((node: HTMLDivElement | null) => {
-    infographicContainerRef.current = node
-    // 如果容器准备好了且 Infographic 还没初始化，则初始化
-    if (node && !infographicRef.current && isMountedRef.current) {
-      // 使用 setTimeout 确保 DOM 完全准备好
-      if (initTimerRef.current) {
-        clearTimeout(initTimerRef.current)
-      }
-      initTimerRef.current = window.setTimeout(() => {
-        if (isMountedRef.current && infographicContainerRef.current && !infographicRef.current) {
-          initInfographic()
+  const setInfographicContainer = useCallback(
+    (node: HTMLDivElement | null) => {
+      infographicContainerRef.current = node
+      // 如果容器准备好了且 Infographic 还没初始化，则初始化
+      if (node && !infographicRef.current && isMountedRef.current) {
+        // 使用 setTimeout 确保 DOM 完全准备好
+        if (initTimerRef.current) {
+          clearTimeout(initTimerRef.current)
         }
-        initTimerRef.current = null
-      }, 0)
-    }
-  }, [initInfographic])
+        initTimerRef.current = window.setTimeout(() => {
+          if (
+            isMountedRef.current &&
+            infographicContainerRef.current &&
+            !infographicRef.current
+          ) {
+            initInfographic()
+          }
+          initTimerRef.current = null
+        }, 0)
+      }
+    },
+    [initInfographic],
+  )
 
   // 流式渲染函数，使用防抖优化性能
-  const renderContent = useCallback((contentToRender: string) => {
-    if (!contentToRender || !infographicContainerRef.current) {
-      return
-    }
-
-    // 如果内容没有变化，跳过渲染
-    if (contentToRender === lastRenderedContentRef.current) {
-      return
-    }
-
-    // 清除之前的定时器
-    if (renderTimerRef.current !== null) {
-      cancelAnimationFrame(renderTimerRef.current)
-    }
-
-    // 使用 requestAnimationFrame 优化渲染时机
-    renderTimerRef.current = requestAnimationFrame(() => {
-      renderTimerRef.current = null
-      
-      // 检查组件是否仍然挂载
-      if (!isMountedRef.current || !infographicContainerRef.current) {
+  const renderContent = useCallback(
+    (contentToRender: string) => {
+      if (!contentToRender || !infographicContainerRef.current) {
         return
       }
 
-      // 如果实例不存在，尝试初始化
-      if (!infographicRef.current) {
-        if (!initInfographic()) {
-          return
-        }
+      // 如果内容没有变化，跳过渲染
+      if (contentToRender === lastRenderedContentRef.current) {
+        return
       }
 
-      try {
-        infographicRef.current!.render(contentToRender)
-        lastRenderedContentRef.current = contentToRender
-      } catch (error) {
-        console.error("渲染失败:", error)
-        // 如果渲染失败，尝试重新初始化并重试
-        if (initInfographic() && infographicRef.current) {
-          try {
-            infographicRef.current.render(contentToRender)
-            lastRenderedContentRef.current = contentToRender
-          } catch (retryError) {
-            console.error("重试渲染失败:", retryError)
+      // 清除之前的定时器
+      if (renderTimerRef.current !== null) {
+        cancelAnimationFrame(renderTimerRef.current)
+      }
+
+      // 使用 requestAnimationFrame 优化渲染时机
+      renderTimerRef.current = requestAnimationFrame(() => {
+        renderTimerRef.current = null
+
+        // 检查组件是否仍然挂载
+        if (!isMountedRef.current || !infographicContainerRef.current) {
+          return
+        }
+
+        // 如果实例不存在，尝试初始化
+        if (!infographicRef.current) {
+          if (!initInfographic()) {
+            return
           }
         }
-      }
-    })
-  }, [initInfographic])
+
+        try {
+          infographicRef.current!.render(contentToRender)
+          lastRenderedContentRef.current = contentToRender
+        } catch (error) {
+          console.error("渲染失败:", error)
+          // 如果渲染失败，尝试重新初始化并重试
+          if (initInfographic() && infographicRef.current) {
+            try {
+              infographicRef.current.render(contentToRender)
+              lastRenderedContentRef.current = contentToRender
+            } catch (retryError) {
+              console.error("重试渲染失败:", retryError)
+            }
+          }
+        }
+      })
+    },
+    [initInfographic],
+  )
 
   // 初始化挂载状态
   useEffect(() => {
@@ -136,13 +152,13 @@ function Preview({ content, loading = false, onContentChange }: PreviewProps) {
         clearTimeout(initTimerRef.current)
         initTimerRef.current = null
       }
-      
+
       // 清理渲染定时器
       if (renderTimerRef.current !== null) {
         cancelAnimationFrame(renderTimerRef.current)
         renderTimerRef.current = null
       }
-      
+
       // 清理 Infographic 实例 - 在 React 清理 DOM 之前执行
       if (infographicRef.current) {
         try {
@@ -163,12 +179,12 @@ function Preview({ content, loading = false, onContentChange }: PreviewProps) {
     if (!isMountedRef.current || !content) {
       return
     }
-    
+
     // 如果实例不存在，尝试初始化
     if (!infographicRef.current && infographicContainerRef.current) {
       initInfographic()
     }
-    
+
     renderContent(content)
   }, [content, renderContent, initInfographic])
 
@@ -256,7 +272,7 @@ function Preview({ content, loading = false, onContentChange }: PreviewProps) {
 
     try {
       message.loading({ content: "正在生成高清图片...", key: "download" })
-      
+
       // 使用 Infographic 的原生 toDataURL 方法
       const originalDataUrl = await infographicRef.current.toDataURL()
       if (!originalDataUrl) {
@@ -266,7 +282,7 @@ function Preview({ content, loading = false, onContentChange }: PreviewProps) {
       // 使用 Canvas 添加白色背景
       const img = new Image()
       img.crossOrigin = "anonymous"
-      
+
       await new Promise<void>((resolve, reject) => {
         img.onload = () => {
           try {
@@ -275,22 +291,22 @@ function Preview({ content, loading = false, onContentChange }: PreviewProps) {
             canvas.width = img.width
             canvas.height = img.height
             const ctx = canvas.getContext("2d")
-            
+
             if (!ctx) {
               reject(new Error("无法获取 Canvas 上下文"))
               return
             }
-            
+
             // 先填充白色背景
             ctx.fillStyle = "#ffffff"
             ctx.fillRect(0, 0, canvas.width, canvas.height)
-            
+
             // 绘制原始图片
             ctx.drawImage(img, 0, 0)
-            
+
             // 导出为新的 dataUrl
             const dataUrl = canvas.toDataURL("image/png")
-            
+
             // 创建下载链接
             const link = document.createElement("a")
             link.download = `信息图表-${Date.now()}.png`
@@ -301,17 +317,17 @@ function Preview({ content, loading = false, onContentChange }: PreviewProps) {
             if (link.parentNode) {
               document.body.removeChild(link)
             }
-            
+
             resolve()
           } catch (error) {
             reject(error)
           }
         }
-        
+
         img.onerror = () => {
           reject(new Error("图片加载失败"))
         }
-        
+
         img.src = originalDataUrl
       })
 
@@ -371,8 +387,11 @@ function Preview({ content, loading = false, onContentChange }: PreviewProps) {
               复制图片
             </Button>
             <Button
-              type="primary"
-              icon={<Icon icon="mingcute:download-line" className="text-base" />}
+              color="primary"
+              variant="outlined"
+              icon={
+                <Icon icon="mingcute:download-line" className="text-base" />
+              }
               onClick={handleDownload}
               disabled={loading}
             >
@@ -381,14 +400,12 @@ function Preview({ content, loading = false, onContentChange }: PreviewProps) {
           </div>
         )}
       </div>
-      <div
-        className="flex-1 min-h-0 relative rounded-lg overflow-hidden bg-slate-50/50 border border-slate-100"
-      >
+      <div className="flex-1 min-h-0 relative rounded-lg overflow-hidden bg-slate-50/50 border border-slate-100">
         {/* Infographic 容器 - 独立的 div 供 Infographic 库操作 */}
         <div
           ref={setInfographicContainer}
           className="absolute inset-0 w-full h-full"
-          style={{ pointerEvents: content ? 'auto' : 'none' }}
+          style={{ pointerEvents: content ? "auto" : "none" }}
         />
         {!content && !loading && (
           <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400 p-6 z-20">

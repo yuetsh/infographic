@@ -78,7 +78,7 @@ export async function streamGenerateContent(
     try {
       while (true) {
         const { done, value } = await reader.read()
-        
+
         if (done) {
           // 流结束，处理剩余的缓冲区内容
           if (buffer.trim()) {
@@ -106,7 +106,7 @@ export async function streamGenerateContent(
 
         // 解码新的数据块
         buffer += decoder.decode(value, { stream: true })
-        
+
         // 处理完整的 SSE 消息
         const lines = buffer.split("\n")
         buffer = lines.pop() || "" // 保留最后一个不完整的行
@@ -115,10 +115,10 @@ export async function streamGenerateContent(
           if (line.trim() === "") {
             continue // 跳过空行
           }
-          
+
           if (line.startsWith("data: ")) {
             const data = line.slice(6) // 移除 "data: " 前缀
-            
+
             if (data === "[DONE]") {
               // 流结束标记
               if (options.onComplete) {
@@ -130,7 +130,7 @@ export async function streamGenerateContent(
             try {
               const json = JSON.parse(data)
               const delta = json.choices?.[0]?.delta?.content || ""
-              
+
               if (delta) {
                 fullContent += delta
                 options.onChunk(delta)

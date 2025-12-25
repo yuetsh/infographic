@@ -32,7 +32,7 @@ function Chat({ onContentGenerated, onLoadingChange }: ChatProps) {
     const prompt = value.trim()
     setLoading(true)
     onLoadingChange?.(true)
-    
+
     let accumulatedContent = ""
 
     try {
@@ -91,6 +91,7 @@ function Chat({ onContentGenerated, onLoadingChange }: ChatProps) {
             cancelText="取消"
           >
             <Button
+              danger
               icon={<Icon icon="mingcute:delete-line" className="text-base" />}
             >
               清空历史
