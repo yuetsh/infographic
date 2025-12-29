@@ -1,9 +1,10 @@
 import { useState } from "react"
-import { Card, Typography, Input, Button, message, Popconfirm } from "antd"
+import { Card, Typography, Input, Button, message, Popconfirm, Select } from "antd"
 import { Icon } from "@iconify/react"
 import History, { type ChatHistory } from "./History"
 import { useHistory } from "./useHistory"
 import { streamGenerateContent, AIServiceError } from "./Service"
+import { TEMPLATE_NAMES } from "./Prompt"
 
 const { Title } = Typography
 const { TextArea } = Input
@@ -16,12 +17,42 @@ interface ChatProps {
 function Chat({ onContentGenerated, onLoadingChange }: ChatProps) {
   const [value, setValue] = useState("")
   const [loading, setLoading] = useState(false)
+  const [selectedTemplate, setSelectedTemplate] = useState<string | undefined>("")
   const { history, addHistory, deleteHistory, clearAllHistory } = useHistory()
 
   // 点击历史记录项
   const handleHistoryClick = (item: ChatHistory) => {
     setValue(item.prompt)
     onContentGenerated(item.content)
+  }
+
+  // 处理模板选择
+  const handleTemplateChange = (template: string) => {
+    setSelectedTemplate(template)
+
+    if (!template || template === "") {
+      // 如果清空选择，移除模板提示
+      const templatePattern = /使用.+风格的信息图\s*$/
+      setValue((prev) => prev.replace(templatePattern, "").trim())
+      return
+    }
+
+    const templateName = TEMPLATE_NAMES[template] || template
+    const templateText = `使用 ${templateName} 作为模版的信息图`
+
+    setValue((prev) => {
+      // 移除之前的模板提示（如果存在）
+      const templatePattern = /使用.+风格的信息图\s*$/
+      const cleanedPrev = prev.replace(templatePattern, "").trim()
+
+      // 如果输入框为空，直接添加模板提示
+      if (!cleanedPrev) {
+        return templateText
+      }
+
+      // 在末尾添加新的模板提示
+      return `${cleanedPrev}\n${templateText}`
+    })
   }
 
   const handleSend = async () => {
@@ -129,16 +160,31 @@ function Chat({ onContentGenerated, onLoadingChange }: ChatProps) {
             handleSend()
           }}
         />
-        <Button
-          type="primary"
-          onClick={handleSend}
-          disabled={!value.trim() || loading}
-          loading={loading}
-          size="large"
-          icon={<Icon icon="mingcute:send-plane-line" className="text-base" />}
-        >
-          {loading ? "生成中..." : "AI 生成"}
-        </Button>
+        <div className="flex gap-2">
+          <Select
+            placeholder="模板选择"
+            value={selectedTemplate}
+            onChange={handleTemplateChange}
+            options={Object.keys(TEMPLATE_NAMES).map((template) => ({
+              label: TEMPLATE_NAMES[template] || template,
+              value: template,
+            }))}
+            style={{ flex: 1 }}
+            size="large"
+            allowClear
+            disabled={!value.trim()}
+          />
+          <Button
+            type="primary"
+            onClick={handleSend}
+            disabled={!value.trim() || loading}
+            loading={loading}
+            size="large"
+            icon={<Icon icon="mingcute:send-plane-line" className="text-base" />}
+          >
+            {loading ? "生成中..." : "AI 生成"}
+          </Button>
+        </div>
       </div>
     </Card>
   )

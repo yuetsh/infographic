@@ -139,3 +139,44 @@ data
 - 如用户指定风格/色彩/语气，可在 theme 中体现
 - 若信息不足，可合理假设补全，但要保持连贯与可信
 `
+
+
+// 模板中文名称映射
+export const TEMPLATE_NAMES: Record<string, string> = {
+  "": "模板由 AI 决定",
+  "sequence-zigzag-steps-underline-text": "序列-锯齿步骤-下划线文本",
+  "sequence-horizontal-zigzag-underline-text": "序列-水平锯齿-下划线文本",
+  "sequence-circular-simple": "序列-圆形-简单",
+  "sequence-filter-mesh-simple": "序列-过滤网格-简单",
+  "sequence-mountain-underline-text": "序列-山峰-下划线文本",
+  "sequence-cylinders-3d-simple": "序列-3D圆柱-简单",
+  "compare-binary-horizontal-simple-fold": "对比-二元水平-简单折叠",
+  "compare-hierarchy-left-right-circle-node-pill-badge": "对比-层级左右-圆形节点-药丸徽章",
+  "quadrant-quarter-simple-card": "象限-四分之一-简单卡片",
+  "quadrant-quarter-circular": "象限-四分之一-圆形",
+  "list-grid-badge-card": "列表-网格-徽章卡片",
+  "list-grid-candy-card-lite": "列表-网格-糖果卡片-轻量",
+  "list-grid-ribbon-card": "列表-网格-丝带卡片",
+  "list-row-horizontal-icon-arrow": "列表-行水平-图标箭头",
+  "relation-circle-icon-badge": "关系-圆形-图标徽章",
+  "sequence-ascending-steps": "序列-上升步骤",
+  "compare-swot": "对比-SWOT",
+  "sequence-color-snake-steps-horizontal-icon-line": "序列-彩色蛇形步骤-水平图标线",
+  "sequence-pyramid-simple": "序列-金字塔-简单",
+  "list-sector-plain-text": "列表-扇形-纯文本",
+  "sequence-roadmap-vertical-simple": "序列-路线图-垂直-简单",
+  "sequence-zigzag-pucks-3d-simple": "序列-锯齿圆盘-3D-简单",
+  "sequence-ascending-stairs-3d-underline-text": "序列-上升楼梯-3D-下划线文本",
+  "compare-binary-horizontal-badge-card-arrow": "对比-二元水平-徽章卡片-箭头",
+  "compare-binary-horizontal-underline-text-vs": "对比-二元水平-下划线文本-VS",
+  "hierarchy-tree-tech-style-capsule-item": "层级树-科技风格-胶囊项",
+  "hierarchy-tree-curved-line-rounded-rect-node": "层级树-曲线-圆角矩形节点",
+  "hierarchy-tree-tech-style-badge-card": "层级树-科技风格-徽章卡片",
+  "chart-column-simple": "图表-柱状图-简单",
+  "chart-bar-plain-text": "图表-条形图-纯文本",
+  "chart-line-plain-text": "图表-折线图-纯文本",
+  "chart-pie-plain-text": "图表-饼图-纯文本",
+  "chart-pie-compact-card": "图表-饼图-紧凑卡片",
+  "chart-pie-donut-plain-text": "图表-甜甜圈图-纯文本",
+  "chart-pie-donut-pill-badge": "图表-甜甜圈图-药丸徽章",
+}
