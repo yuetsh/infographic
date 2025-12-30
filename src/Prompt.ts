@@ -140,7 +140,6 @@ data
 - 若信息不足，可合理假设补全，但要保持连贯与可信
 `
 
-
 // 模板中文名称映射
 export const TEMPLATE_NAMES: Record<string, string> = {
   "": "模板由 AI 决定",
@@ -151,7 +150,8 @@ export const TEMPLATE_NAMES: Record<string, string> = {
   "sequence-mountain-underline-text": "序列-山峰-下划线文本",
   "sequence-cylinders-3d-simple": "序列-3D圆柱-简单",
   "compare-binary-horizontal-simple-fold": "对比-二元水平-简单折叠",
-  "compare-hierarchy-left-right-circle-node-pill-badge": "对比-层级左右-圆形节点-药丸徽章",
+  "compare-hierarchy-left-right-circle-node-pill-badge":
+    "对比-层级左右-圆形节点-药丸徽章",
   "quadrant-quarter-simple-card": "象限-四分之一-简单卡片",
   "quadrant-quarter-circular": "象限-四分之一-圆形",
   "list-grid-badge-card": "列表-网格-徽章卡片",
@@ -161,7 +161,8 @@ export const TEMPLATE_NAMES: Record<string, string> = {
   "relation-circle-icon-badge": "关系-圆形-图标徽章",
   "sequence-ascending-steps": "序列-上升步骤",
   "compare-swot": "对比-SWOT",
-  "sequence-color-snake-steps-horizontal-icon-line": "序列-彩色蛇形步骤-水平图标线",
+  "sequence-color-snake-steps-horizontal-icon-line":
+    "序列-彩色蛇形步骤-水平图标线",
   "sequence-pyramid-simple": "序列-金字塔-简单",
   "list-sector-plain-text": "列表-扇形-纯文本",
   "sequence-roadmap-vertical-simple": "序列-路线图-垂直-简单",
