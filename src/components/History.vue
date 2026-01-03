@@ -1,7 +1,7 @@
 <template>
-  <n-card style="margin-bottom: 20px;" v-if="history.length > 0">
+  <n-card class="history-card" v-if="history.length > 0">
     <div v-for="(item, index) in history" :key="item.id">
-      <div style="cursor: pointer;" @click="handleHistoryClick(item)">
+      <div class="history-item" @click="handleHistoryClick(item)">
         <n-flex align="center" justify="space-between" :gap="8" :wrap="false">
           <n-flex vertical>
             <n-ellipsis :line-clamp="1">{{ item.prompt }}</n-ellipsis>
@@ -84,3 +84,15 @@ const handleDelete = (id: string) => {
   emit("delete-history", id)
 }
 </script>
+
+<style scoped>
+.history-card {
+  margin-bottom: 20px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.history-item {
+  cursor: pointer;
+}
+</style>

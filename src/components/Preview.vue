@@ -33,21 +33,14 @@
         </n-button>
       </n-flex>
     </template>
-    <div>
-      <div ref="containerRef" />
-      <n-flex v-if="!content && !loading" vertical>
-        <Icon icon="mingcute:image-line" />
-        <n-text>生成的信息图表将在这里显示</n-text>
-      </n-flex>
-      <n-flex v-if="loading && !content" vertical>
-        <n-spin size="large" />
-        <n-text>正在生成信息图表...</n-text>
-      </n-flex>
-      <n-flex v-if="loading && content">
-        <n-spin size="small" />
-        <n-text>生成中...</n-text>
-      </n-flex>
-    </div>
+    <n-spin :show="loading" size="large">
+      <div class="preview-container">
+        <div ref="containerRef" class="infographic-container" />
+        <n-text v-if="!content && !loading">
+          生成的信息图表将在这里显示
+        </n-text>
+      </div>
+    </n-spin>
 
     <n-modal
       v-model:show="isModalOpen"
@@ -73,13 +66,14 @@
       title="查看大图"
       :bordered="false"
     >
-      <div>
+      <n-flex justify="center" align="center" style="min-height: 200px">
         <img
           v-if="imageDataUrl"
           :src="imageDataUrl"
           alt="信息图大图"
+          style="max-width: 100%; max-height: 80vh; height: auto"
         />
-      </div>
+      </n-flex>
     </n-modal>
   </n-card>
 </template>
@@ -337,3 +331,16 @@ const handleDownload = async () => {
 }
 </script>
 
+<style scoped>
+.preview-container {
+  position: relative;
+  max-height: 800px;
+  min-height: 60px;
+  text-align: center;
+}
+
+.infographic-container {
+  max-height: 800px;
+  overflow: hidden;
+}
+</style>
