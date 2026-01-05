@@ -10,7 +10,7 @@
     "fmt": "prettier --write ."
   },
   "dependencies": {
-    "@antv/infographic": "^0.2.2",
+    "@antv/infographic": "^0.2.4",
     "naive-ui": "^2.43.2",
     "normalize.css": "^8.0.1",
     "vue": "^3.5.26"

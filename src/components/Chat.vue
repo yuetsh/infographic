@@ -74,7 +74,7 @@ import { Icon } from "@iconify/vue"
 import History from "./History.vue"
 import { useHistory } from "../composables/useHistory"
 import { streamGenerateContent, AIServiceError } from "../Service"
-import { TEMPLATE_NAMES } from "../Prompt"
+import { TEMPLATE_NAMES } from "../Template"
 import type { ChatHistory } from "../types/History"
 
 interface Props {
