@@ -10,7 +10,7 @@
     "fmt": "prettier --write ."
   },
   "dependencies": {
-    "@antv/infographic": "^0.2.4",
+    "@antv/infographic": "^0.2.6",
     "naive-ui": "^2.43.2",
     "normalize.css": "^8.0.1",
     "vue": "^3.5.26"
@@ -21,9 +21,9 @@
     "@vitejs/plugin-vue": "^6.0.3",
     "eventemitter3": "^5.0.1",
     "prettier": "^3.7.4",
-    "typescript": "~5.9.3",
+    "typescript": "^5.9.3",
     "vite": "npm:rolldown-vite@7.3.0",
-    "vue-tsc": "^3.2.1"
+    "vue-tsc": "^3.2.2"
   },
   "overrides": {
     "vite": "npm:rolldown-vite@7.3.0"
